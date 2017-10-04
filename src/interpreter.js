@@ -16,7 +16,7 @@ var Interpreter = function () {
 
 
     this.isValidRule = function (string){
-        var ruleRegex = /\w+\(\w+(,\ \w+)*\)\ \:\-\ (\w+\(\w+(,\ \w+)*\),\ )*./;
+        var ruleRegex = /\w+\(\w+(,\ \w+)*\)\ \:\-\ (\w+\(\w+(,\ \w+)*\),\ )*/;
         return ruleRegex.test(string);
     };
 
@@ -24,7 +24,7 @@ var Interpreter = function () {
         if(this.isValidRule(string)){
             return false;
         }
-        var factReg = /\w+\(\w+(, \w+)*\)./;
+        var factReg = /\w+\(\w+(, \w+)*\)/;
         return factReg.test(string);
     };
 
@@ -149,7 +149,11 @@ var Interpreter = function () {
             console.log("Invalid DB");
             return undefined;
         }
-        var boolFactFound = this.searchFact(this.removeDotsAndSpace(params), factDB)
+        if(!this.hasPattern(params)){
+            console.log("Invalid Query");
+            return false;
+        }
+        var boolFactFound = this.searchFact(this.removeDotsAndSpace(params), factDB);
         var boolRuleFound = this.searchRule(this.removeDotsAndSpace(params),ruleDB);
         return (boolFactFound || boolRuleFound);
     };
