@@ -3,11 +3,12 @@ var Interpreter = function () {
     var parsed_DB;
     var validDB;
 
-    this.hasBasePattern = function(string){
-        var factReg = /\w+\(\w+(, \w+)*\)./;
-        return factReg.test(string);
+    //Validacion de entrada
+    this.hasPattern = function(string){
+        return(this.isValidFact(string) || this.isValidRule(string));
     }
-    /*
+
+
     this.isValidRule = function (string){
         var ruleRegex = /\w+\(\w+(,\ \w+)*\)\ \:\-\ (\w+\(\w+(,\ \w+)*\),\ )*./;
         return ruleRegex.test(string);
@@ -17,26 +18,35 @@ var Interpreter = function () {
         if(this.isValidRule(string)){
             return false;
         }
-
-    }*/
+        var factReg = /\w+\(\w+(, \w+)*\)./;
+        return factReg.test(string);
+    }
 
     this.isValidDB = function(array){
         for(var i=0;i<array.length;i++){
-            if(!this.hasBasePattern(array[i])){
+            if(!this.hasPattern(array[i])){
                 return false;
             }
         }
         return true;
     }
 
-    this.removeDotsAndSpace = function(array){
-        for(var i=0; i<array.length; i++){
-            array[i].replace('.','');
-            array[i].replace(' ','');
-        }
-        return array;
+    //Limpieza de DB
+    this.removeDotsAndSpace = function(string){
+        var cleanString = string.replace('.','');
+        return cleanString.replace(' ','');
     }
 
+    this.cleanDB = function(array){
+        var cleanArray = [];
+        for(var i=0;i<array.length;i++){
+            var cleanString = this.removeDotsAndSpace(array[i]);
+            cleanArray.push(cleanString);
+        }
+        return cleanArray;
+    }
+
+    //Busqueda de Fact
     this.searchFact = function(fact, db) {
         for (var i = 0; i < db.length; i++) {
             if (fact === db[i]) {
@@ -46,12 +56,14 @@ var Interpreter = function () {
         return false;
     }
 
+    //Busqueda de Rule
+
     this.parseDB = function (params, paramss, paramsss) {
         validDB = this.isValidDB(params);
         if (validDB == false){
             return;
         }
-        parsed_DB = this.removeDotsAndSpace(params);
+        parsed_DB = this.cleanDB(params);
     }
 
     this.checkQuery = function (params) {
@@ -61,7 +73,7 @@ var Interpreter = function () {
         }
         console.log("Valid DB");
         //return true;
-        return this.searchFact(params, this.parsed_DB);
+        return this.searchFact(this.removeDotsAndSpace(params), parsed_DB);
     }
 }
 

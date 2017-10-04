@@ -52,7 +52,7 @@ describe("Interpreter", function () {
         });
 
         it('varon(maria) should be false', function () {
-            assert(interpreter.checkQuery('varon(maria)') === undefined);
+            assert(interpreter.checkQuery('varon(maria)') === false);
         });
 
         it('mujer(cecilia) should be true', function () {
