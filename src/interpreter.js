@@ -40,7 +40,7 @@ var Interpreter = function () {
     //Limpieza de DB
     this.removeDotsAndSpace = function(string){
         var cleanString = string.replace('.','');
-        return cleanString.replace(' ','');
+        return cleanString.replace(/ /g,'');
     };
 
 
@@ -100,7 +100,7 @@ var Interpreter = function () {
         var replacedRule = DBRule;
 
         if(QRuleParameters.length !== DBRuleParameters.length){
-            //TODO: Tirar error
+            return false;
         }
         for(var i=0; i<QRuleParameters.length;i++){
             var aux1 = DBRuleParameters[i];
@@ -117,6 +117,9 @@ var Interpreter = function () {
             return false;
         }
         var replacedRule = this.changeParameters(QRule,RuleToUse);
+        if(replacedRule === false){
+            return false;
+        }
         var factRegex = /\w+\(\w+(,\w+)*\)/g;
         return this.searchMultipleFacts(replacedRule.split(":-")[1].match(factRegex));
     };
